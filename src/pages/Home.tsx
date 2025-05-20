@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Search, { CityOption } from "../component/others/Search";
-import WeatherCard from "../component/others/WeatherCard";
+import { getCurrentWeather, getForecast } from "../queries/weather";
 
 interface WeatherData {
   name: string;
@@ -23,14 +23,34 @@ export default function Home() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleOnSearchChange = (searchData: CityOption | null) => {
+  const handleOnSearchChange = async (searchData: CityOption | null) => {
     if (searchData) {
       setCity(searchData.label);
-      // TODO: Implement weather fetching logic here
-      console.log(searchData);
+      setLoading(true);
+      setError("");
+
+      try {
+        const [lat, lon] = searchData.value.split(" ").map(Number);
+        // const result = await getCurrentWeather(lat, lon);
+        const result = await getForecast(lat, lon);
+
+        if (result.success) {
+          setWeather(result.data);
+          console.log(result);
+        } else {
+          setError(result.message);
+          setWeather(null);
+        }
+      } catch (err) {
+        setError("Failed to fetch weather data");
+        setWeather(null);
+      } finally {
+        setLoading(false);
+      }
     } else {
       setCity("");
       setWeather(null);
+      setError("");
     }
   };
 
@@ -47,10 +67,14 @@ export default function Home() {
           </div>
         )}
 
-        <WeatherCard />
+        {loading && (
+          <div className="text-center py-4">
+            <p>Loading weather data...</p>
+          </div>
+        )}
 
-        {/* {weather && (
-          <div className="bg-white rounded-lg p-6 shadow-lg">
+        {weather && (
+          <div className="bg-white rounded-lg p-6 shadow-lg mt-4">
             <h2 className="text-2xl font-bold mb-4">{weather.name}</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -85,7 +109,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );
