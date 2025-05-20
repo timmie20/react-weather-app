@@ -94,30 +94,16 @@ pnpm install
 
 ````env
 VITE_WEATHER_API_KEY=aeda7b0daaf670a1ded80f8faa2de10c
-VITE_RAPID_API_KEY=4b0729b720msha963c1aab6fcf66p13d7eejsnb50294ef6d4f```
+VITE_RAPID_API_KEY=4b0729b720msha963c1aab6fcf66p13d7eejsnb50294ef6d4f
 
-4. Get your API keys:
 
-   - OpenWeatherMap API: [Sign up here](https://openweathermap.org/api)
-   - Copy your API key and paste it in the `.env` file
-
-5. Run the development server:
+4. Run the development server:
 
 ```bash
 pnpm dev
 ````
 
-6. Open [http://localhost:5173](http://localhost:5173) in your browser
-
-## Building for Production
-
-To create a production build:
-
-```bash
-pnpm build
-```
-
-The build files will be in the `dist` directory.
+5. Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ## API Integration
 
@@ -125,5 +111,3 @@ The app uses two main APIs:
 
 1. OpenWeatherMap API for weather data
 2. GeoDB API for city search
-
-This project is licensed under the MIT License - see the LICENSE file for details.
