@@ -1,55 +1,56 @@
 import { useState } from "react";
 import Search, { CityOption } from "../component/others/Search";
 import { getCurrentWeather, getForecast } from "../queries/weather";
+import { ForecastResponse, WeatherData } from "../types/queries";
+import Forecast from "../component/others/Forecast";
+import CurrentWeather from "../component/others/CurrentWeather";
 
-interface WeatherData {
-  name: string;
-  main: {
-    temp: number;
-    feels_like: number;
-    humidity: number;
-  };
-  weather: Array<{
-    description: string;
-  }>;
-  wind: {
-    speed: number;
-  };
+interface WeatherState {
+  current: WeatherData | null;
+  forecast: ForecastResponse | null;
 }
 
 export default function Home() {
-  const [city, setCity] = useState("");
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [weather, setWeather] = useState<WeatherState>({
+    current: null,
+    forecast: null,
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleOnSearchChange = async (searchData: CityOption | null) => {
     if (searchData) {
-      setCity(searchData.label);
       setLoading(true);
       setError("");
 
       try {
         const [lat, lon] = searchData.value.split(" ").map(Number);
-        // const result = await getCurrentWeather(lat, lon);
-        const result = await getForecast(lat, lon);
+        const [currentResult, forecastResult] = await Promise.all([
+          getCurrentWeather(lat, lon),
+          getForecast(lat, lon),
+        ]);
 
-        if (result.success) {
-          setWeather(result.data);
-          console.log(result);
+        if (currentResult.success && forecastResult.success) {
+          setWeather({
+            current: currentResult.data,
+            forecast: forecastResult.data,
+          });
         } else {
-          setError(result.message);
-          setWeather(null);
+          const errorMessage = !currentResult.success
+            ? currentResult.message || "Failed to fetch current weather"
+            : forecastResult.message || "Failed to fetch forecast";
+          setError(errorMessage);
+          setWeather({ current: null, forecast: null });
         }
-      } catch (err) {
+      } catch (error) {
         setError("Failed to fetch weather data");
-        setWeather(null);
+        setWeather({ current: null, forecast: null });
+        console.log(error);
       } finally {
         setLoading(false);
       }
     } else {
-      setCity("");
-      setWeather(null);
+      setWeather({ current: null, forecast: null });
       setError("");
     }
   };
@@ -73,43 +74,9 @@ export default function Home() {
           </div>
         )}
 
-        {weather && (
-          <div className="bg-white rounded-lg p-6 shadow-lg mt-4">
-            <h2 className="text-2xl font-bold mb-4">{weather.name}</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-gray-600">Temperature</p>
-                <p className="text-2xl font-semibold">
-                  {Math.round(weather.main.temp)}°C
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-600">Feels Like</p>
-                <p className="text-2xl font-semibold">
-                  {Math.round(weather.main.feels_like)}°C
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-600">Humidity</p>
-                <p className="text-2xl font-semibold">
-                  {weather.main.humidity}%
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-600">Wind Speed</p>
-                <p className="text-2xl font-semibold">
-                  {weather.wind.speed} m/s
-                </p>
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-gray-600">Conditions</p>
-              <p className="text-xl font-semibold capitalize">
-                {weather.weather[0].description}
-              </p>
-            </div>
-          </div>
-        )}
+        {weather.current && <CurrentWeather data={weather.current} />}
+
+        {weather.forecast && <Forecast data={weather.forecast} />}
       </div>
     </div>
   );

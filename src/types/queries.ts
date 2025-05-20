@@ -21,6 +21,22 @@ export interface CityDataProps {
   data: City[];
 }
 
+export interface WeatherData {
+  name: string;
+  main: {
+    temp: number;
+    feels_like: number;
+    humidity: number;
+    pressure: number;
+  };
+  weather: Array<{
+    description: string;
+  }>;
+  wind: {
+    speed: number;
+  };
+}
+
 export interface ForecastWeather {
   dt: number;
   main: {
@@ -30,6 +46,7 @@ export interface ForecastWeather {
     temp_max: number;
     pressure: number;
     humidity: number;
+    sea_level: number;
   };
   weather: Array<{
     id: number;
