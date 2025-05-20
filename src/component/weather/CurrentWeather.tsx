@@ -10,9 +10,9 @@ const CurrentWeather = ({ data }: WeatherProps) => {
       <div className="flex justify-between items-center">
         <div>
           <p className="font-semibold text-lg leading-none tracking-wider m-0">
-            {data.city}
+            {data.name}
           </p>
-          <p className="font-normal text-sm leading-none m-0">
+          <p className="font-normal text-sm leading-none mt-3">
             {data.weather[0].description}
           </p>
         </div>

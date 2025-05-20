@@ -1,64 +1,21 @@
-import { useState } from "react";
-import Search, { CityOption } from "../component/others/Search";
-import { getCurrentWeather, getForecast } from "../queries/weather";
-import { ForecastResponse, WeatherData } from "../types/queries";
-import Forecast from "../component/others/Forecast";
-import CurrentWeather from "../component/others/CurrentWeather";
-
-interface WeatherState {
-  current: WeatherData | null;
-  forecast: ForecastResponse | null;
-}
+import { useWeatherInfo } from "../hooks/useWeatherInfo";
+import Forecast from "../component/weather/Forecast";
+import CurrentWeather from "../component/weather/CurrentWeather";
+import Search, { CityOption } from "../component/ui/Search";
 
 export default function Home() {
-  const [weather, setWeather] = useState<WeatherState>({
-    current: null,
-    forecast: null,
-  });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { weather, error, loading, fetchWeather } = useWeatherInfo();
 
-  const handleOnSearchChange = async (searchData: CityOption | null) => {
-    if (searchData) {
-      setLoading(true);
-      setError("");
-
-      try {
-        const [lat, lon] = searchData.value.split(" ").map(Number);
-        const [currentResult, forecastResult] = await Promise.all([
-          getCurrentWeather(lat, lon),
-          getForecast(lat, lon),
-        ]);
-
-        if (currentResult.success && forecastResult.success) {
-          setWeather({
-            current: currentResult.data,
-            forecast: forecastResult.data,
-          });
-        } else {
-          const errorMessage = !currentResult.success
-            ? currentResult.message || "Failed to fetch current weather"
-            : forecastResult.message || "Failed to fetch forecast";
-          setError(errorMessage);
-          setWeather({ current: null, forecast: null });
-        }
-      } catch (error) {
-        setError("Failed to fetch weather data");
-        setWeather({ current: null, forecast: null });
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setWeather({ current: null, forecast: null });
-      setError("");
-    }
+  const handleOnSearchChange = (searchData: CityOption | null) => {
+    fetchWeather(searchData);
   };
 
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">Weather App</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center">
+          Timi's Weatherly App
+        </h1>
 
         <Search onSearchChange={handleOnSearchChange} />
 

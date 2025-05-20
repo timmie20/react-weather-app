@@ -29,7 +29,7 @@ const Forecast = ({ data }: ForecastProps) => {
 
   return (
     <>
-      <label className="text-[23px] font-bold block mb-4">Daily</label>
+      <label className="text-[23px] font-bold block mb-4">Other Days</label>
       <Accordion allowZeroExpanded>
         {data.list.slice(0, 7).map((item, idx) => (
           <AccordionItem key={idx}>
