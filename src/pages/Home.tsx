@@ -11,14 +11,17 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">
-          Timi's Weatherly App
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-sky-700 via-sky-300 to-white">
+      <div className="p-8 mx-auto max-w-screen-xl">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 rounded-lg mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl text-zinc-100 tracking-wide font-bold text-center md:text-left">
+            Weatherly
+          </h1>
 
-        <Search onSearchChange={handleOnSearchChange} />
-
+          <div className="w-full md:w-1/2">
+            <Search onSearchChange={handleOnSearchChange} />
+          </div>
+        </div>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -31,9 +34,17 @@ export default function Home() {
           </div>
         )}
 
-        {weather.current && <CurrentWeather data={weather.current} />}
+        {weather.current && (
+          <div className="mt-8">
+            <CurrentWeather data={weather.current} />
+          </div>
+        )}
 
-        {weather.forecast && <Forecast data={weather.forecast} />}
+        {weather.forecast && (
+          <div className="mt-8">
+            <Forecast data={weather.forecast} />
+          </div>
+        )}
       </div>
     </div>
   );

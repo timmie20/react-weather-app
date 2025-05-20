@@ -29,13 +29,15 @@ const Forecast = ({ data }: ForecastProps) => {
 
   return (
     <>
-      <label className="text-[23px] font-bold block mb-4">Other Days</label>
+      <label className="text-[23px] font-bold text-white block mb-4">
+        Other Days
+      </label>
       <Accordion allowZeroExpanded>
         {data.list.slice(0, 7).map((item, idx) => (
           <AccordionItem key={idx}>
             <AccordionItemHeading>
               <AccordionItemButton>
-                <div className="bg-gray-100 rounded-xl h-10 my-1 flex items-center cursor-pointer text-sm px-5">
+                <div className="bg-gray-100 rounded-xl h-16 my-1 flex items-center cursor-pointer text-sm px-5">
                   <img
                     src={`icons/${item.weather[0].icon}.png`}
                     className="w-10"

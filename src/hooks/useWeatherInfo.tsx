@@ -30,16 +30,22 @@ export const useWeatherInfo = (): UseWeatherReturn => {
 
       try {
         const [lat, lon] = searchData.value.split(" ").map(Number);
+        console.log("Fetching weather for:", { lat, lon });
+
         const [currentResult, forecastResult] = await Promise.all([
           getCurrentWeather(lat, lon),
           getForecast(lat, lon),
         ]);
 
+        console.log("API Results:", { currentResult, forecastResult });
+
         if (currentResult.success && forecastResult.success) {
-          setWeather({
+          const newWeather = {
             current: currentResult.data,
             forecast: forecastResult.data,
-          });
+          };
+          console.log("Setting new weather state:", newWeather);
+          setWeather(newWeather);
         } else {
           const errorMessage = !currentResult.success
             ? currentResult.message || "Failed to fetch current weather"
@@ -48,9 +54,9 @@ export const useWeatherInfo = (): UseWeatherReturn => {
           setWeather({ current: null, forecast: null });
         }
       } catch (error) {
+        console.error("Weather fetch error:", error);
         setError("Failed to fetch weather data");
         setWeather({ current: null, forecast: null });
-        console.error("Weather fetch error:", error);
       } finally {
         setLoading(false);
       }

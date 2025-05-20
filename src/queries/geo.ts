@@ -1,6 +1,8 @@
 import axios, { AxiosError } from "axios";
 import { ApiError, ApiResponse, CityDataProps } from "../types/queries";
 
+const apiUrl = import.meta.env.VITE_RAPID_API_KEY;
+
 const getGeoCities = async (
   nameInput: string
 ): Promise<ApiResponse<CityDataProps> | ApiError> => {
@@ -9,8 +11,7 @@ const getGeoCities = async (
       `https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=1000000&namePrefix=${nameInput}`,
       {
         headers: {
-          "x-rapidapi-key":
-            "4b0729b720msha963c1aab6fcf66p13d7eejsnb50294ef6d4f",
+          "x-rapidapi-key": `${apiUrl}`,
           "x-rapidapi-host": "wft-geo-db.p.rapidapi.com",
         },
       }
